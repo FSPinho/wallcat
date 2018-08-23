@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "83804129050",
+    "firebase_url": "https://cytech-wallcat.firebaseio.com",
+    "project_id": "cytech-wallcat",
+    "storage_bucket": "cytech-wallcat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83804129050:android:66ec4331fa533df1",
+        "android_client_info": {
+          "package_name": "com.cytech.wallcat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "83804129050-soi0qt6oqo5e7oh0k1hstont2q7q5e8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBr8tq0LYqXR9MdF3tlqW4lQwxgcDxYs0c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

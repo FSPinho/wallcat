@@ -1,0 +1,40 @@
+{
+  "name": "wallcat",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-preset-react-native-stage-0": "^1.0.1",
+    "jest": "^23.5.0",
+    "jest-react-native": "^18.0.0",
+    "react-test-renderer": "16.3.1"
+  },
+  "scripts": {
+    "start": "fuser -k 8081/tcp && react-native start",
+    "android": "react-native run-android",
+    "release": "react-native run-android --variant=release",
+    "ios": "react-native run-ios",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "dependencies": {
+    "babel-plugin-transform-remove-console": "^6.9.4",
+    "hoist-non-react-statics": "^3.0.1",
+    "i18next": "^11.6.0",
+    "prop-types": "^15.6.2",
+    "react": "16.3.1",
+    "react-i18next": "^7.10.1",
+    "react-native": "~0.55.2",
+    "react-native-admob": "^2.0.0-beta.5",
+    "react-native-google-analytics-bridge": "^5.8.0",
+    "react-native-languages": "^2.0.1",
+    "react-native-vector-icons": "^5.0.0",
+    "react-native-view-shot": "^2.4.0"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  }
+}

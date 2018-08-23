@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">83804129050-soi0qt6oqo5e7oh0k1hstont2q7q5e8s.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://cytech-wallcat.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">83804129050</string>
+    <string name="google_api_key" translatable="false">AIzaSyBr8tq0LYqXR9MdF3tlqW4lQwxgcDxYs0c</string>
+    <string name="google_app_id" translatable="false">1:83804129050:android:66ec4331fa533df1</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBr8tq0LYqXR9MdF3tlqW4lQwxgcDxYs0c</string>
+    <string name="google_storage_bucket" translatable="false">cytech-wallcat.appspot.com</string>
+    <string name="project_id" translatable="false">cytech-wallcat</string>
+</resources>

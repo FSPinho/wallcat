@@ -1,0 +1,4 @@
+#Thu Aug 23 13:56:17 BRT 2018
+base.0=/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex

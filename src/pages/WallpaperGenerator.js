@@ -11,7 +11,7 @@ import WallpaperManager from '../services/WallpaperManager';
 import { withTheme } from '../theme';
 import { palette } from '../theme/Theme';
 
-const MAX_THEME_CHANGE_BEFORE_ADS = 10
+const MAX_THEME_CHANGE_BEFORE_ADS = __DEV__ ? 2 : 8
 
 const createTheme = (id, p, s) => ({
     id,
@@ -51,35 +51,6 @@ const SETS = ['1', '2', '3', '4', '5', '6', undefined, undefined]
 
 class WallpaperGenerator extends React.Component {
 
-    static navigationOptions = ({ navigation }) => {
-        const params = navigation.state.params || {}
-        const {
-            color = 'white',
-            t = () => undefined
-        } = params
-
-        return {
-            headerTitle: translate('common')(({ t }) =>
-                <Box centralize fit style={{ marginTop: 8 }}>
-                    <Text style={{
-                        fontWeight: '500',
-                        fontSize: 24,
-                        color,
-                        marginRight: 8,
-                    }}>{t('wallpaper-generator-screen-title')}</Text>
-                    <CatIcon set={'3'}
-                        size={36}
-                        rotation={30}
-                        color={color} />
-                </Box>
-            ),
-            headerStyle: {
-                backgroundColor: 'white',
-                elevation: 0
-            }
-        }
-    }
-
     constructor(props) {
         super(props)
 
@@ -98,10 +69,16 @@ class WallpaperGenerator extends React.Component {
     }
 
     async componentDidMount() {
-        this.props.navigation.setParams({
-            color: this.state.theme.dark,
-            t: this.props.t
-        })
+
+        if (__DEV__) {
+            console.log('WallpaperGenerator:doShowAds - DEV MODE!!!')
+            Alert.showLongText('Showing ads on dev mode!')
+            await AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
+        } else {
+            console.log('WallpaperGenerator:doShowAds - PROD MODE!!!')
+            Alert.showLongText('Showing ads on prod mode!')
+            await AdMobRewarded.setAdUnitID('ca-app-pub-5594222713152935/1022883731');
+        }
 
         this.doUpdateTheme()
     }
@@ -126,10 +103,6 @@ class WallpaperGenerator extends React.Component {
         const theme = _theme || this.state.theme
 
         await this.asyncSetState({ theme })
-        await this.props.navigation.setParams({
-            color: theme.dark,
-            t: this.props.t
-        })
 
         setTimeout(async () => {
 
@@ -174,12 +147,45 @@ class WallpaperGenerator extends React.Component {
                 refreshing: false
             })
 
-            setTimeout(() => {
-                this.asyncSetState({
-                    themeLimitReached: this.state.themeChangeCount >= MAX_THEME_CHANGE_BEFORE_ADS,
-                })
-            })
-        }, 500)
+            setTimeout(async () => {
+
+                try {
+
+                    if (this.state.themeChangeCount >= MAX_THEME_CHANGE_BEFORE_ADS) {
+                        console.log('WallpaperGenerator:doUpdateTheme - Checking for ads...')
+
+                        await AdMobRewarded.requestAd()
+                        console.log('WallpaperGenerator:doUpdateTheme - Ad found!')
+                        this.asyncSetState({
+                            themeLimitReached: true,
+                        })
+
+                    } else {
+
+                        this.asyncSetState({
+                            themeLimitReached: false,
+                        })
+
+                    }
+
+                } catch (error) {
+
+                    if (error.message.startsWith('Ad is already loaded')) {
+                        console.log('WallpaperGenerator:doUpdateTheme - Ad is already loaded!')
+                        this.asyncSetState({
+                            themeLimitReached: true,
+                        })
+                    } else {
+                        console.log('WallpaperGenerator:doUpdateTheme - No ads found:', error.message)
+                        this.asyncSetState({
+                            themeLimitReached: false,
+                        })
+                    }
+
+                }
+
+            }, 200)
+        }, 200)
 
     }
 
@@ -215,26 +221,27 @@ class WallpaperGenerator extends React.Component {
             this.doChangeRefreshing(true)
 
             try {
-                if (__DEV__) {
-                    console.log('WallpaperGenerator:doShowAds - DEV MODE!!!')
-                    Alert.showLongText('Showing ads on dev mode!')
-                    await AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
-                } else {
-                    console.log('WallpaperGenerator:doShowAds - PROD MODE!!!')
-                    Alert.showLongText('Showing ads on prod mode!')
-                    await AdMobRewarded.setAdUnitID('ca-app-pub-5594222713152935/1022883731');
+
+                try {
+                    await AdMobRewarded.requestAd()
+                } catch (error) {
+                    /** ... */
                 }
 
-                await AdMobRewarded.requestAd()
                 await AdMobRewarded.showAd()
 
-                AdMobRewarded.addEventListener('rewarded', () => {
-                    Alert.showLongText(this.props.t('watch-thanks'))
+                AdMobRewarded.removeAllListeners()
+                AdMobRewarded.addEventListener('rewarded', (reward) => {
+                    console.log('WallpaperGenerator:doShowAds - Ad rewarded:', reward)
+                    // Alert.showLongText(this.props.t('watch-thanks'))
                     this.asyncSetState({ themeChangeCount: 0, themeLimitReached: false })
                 });
 
-            } catch (err) {
-                console.log('WallpaperGenerator:doShowAds -', error)
+            } catch (error) {
+
+                console.log('WallpaperGenerator:doShowAds - Can\'t show Ad:', error)
+                this.asyncSetState({ themeChangeCount: 0, themeLimitReached: false })
+
             }
 
             this.asyncSetState({ refreshing: false })
@@ -247,81 +254,95 @@ class WallpaperGenerator extends React.Component {
         const { t, theme, styles } = this.props
         const { refreshing, wallpaperItems, theme: wTheme, themeLimitReached } = this.state
 
-        console.log(themeLimitReached, this.state.themeChangeCount)
-
         return (
             <Page>
-                <Box style={styles.backHeader} ref="backHeader" />
+                <Box column fit>
+                    <Box style={styles.backHeader} ref="backHeader" />
 
-                <Box alignItems="stretch" fit column>
-                    <Box padding fit>
-                        <Paper fit style={styles.wallpaperPaperWrapper}>
-                            {
-                                refreshing ?
-                                    (
-                                        <Box centralize fitAbsolute>
-                                            <ActivityIndicator color={theme.palette.Primary.color} />
-                                        </Box>
-                                    ) : (
-                                        <ViewShot ref="wallpaperRef"
-                                            options={{ format: "png" }}
-                                            style={{ flex: 1 }}>
-
-                                            <Box style={[
-                                                styles.wallpaperRoot,
-                                                {
-                                                    backgroundColor: wTheme.background
-                                                }
-                                            ]}>
-                                                {wallpaperItems}
-                                            </Box>
-
-                                        </ViewShot>
-                                    )
-                            }
-
-                            <Fab color={wTheme.dark}
-                                onPress={() => themeLimitReached ? this.doShowAds() : this.doUpdateTheme()}
-                                icon={themeLimitReached ? 'play' : 'reload'}
-                                style={styles.fab1}
-                                animated={themeLimitReached}
-                                animatedText={t('watch-video')}
-                            />
-
-                            {
-                                !themeLimitReached && (
-                                    <Fab color={wTheme.dark}
-                                        onPress={() => this.doSetWallpaper()}
-                                        icon={'check'}
-                                        style={styles.fab2}
-                                        animated={false}
-                                    />
-                                )
-                            }
-
-                        </Paper>
+                    <Box centralize
+                        style={{ height: 56, marginTop: 8 }}>
+                        <Text style={{
+                            fontWeight: '500',
+                            fontSize: 24,
+                            color: wTheme.dark,
+                            marginRight: 8,
+                        }}>{t('wallpaper-generator-screen-title')}</Text>
+                        <CatIcon set={'3'}
+                            size={36}
+                            rotation={30}
+                            color={wTheme.dark} />
                     </Box>
 
-                    <Box style={styles.colorsBoxWrapper}
-                        pointerEvents={themeLimitReached ? 'none' : 'auto'}>
-                        <ScrollView horizontal>
-                            <Paper style={styles.colorsBox} column={false}>
-                                {THEMES.map(th => (
-                                    <Fab color={th.background}
-                                        key={th.id}
-                                        onPress={() => this.doUpdateTheme(th)}
-                                        icon={wTheme.id === th.id ? 'check' : ''}
-                                        style={styles.colorFab}
-                                        animated={false}
-                                    />
-                                ))}
+                    <Box alignItems="stretch" fit column>
+                        <Box padding fit>
+                            <Paper fit style={styles.wallpaperPaperWrapper}>
+                                {
+                                    refreshing ?
+                                        (
+                                            <Box centralize fitAbsolute>
+                                                <ActivityIndicator color={theme.palette.Primary.color} />
+                                            </Box>
+                                        ) : (
+                                            <ViewShot ref="wallpaperRef"
+                                                options={{ format: "png" }}
+                                                style={{ flex: 1 }}>
+
+                                                <Box style={[
+                                                    styles.wallpaperRoot,
+                                                    {
+                                                        backgroundColor: wTheme.background
+                                                    }
+                                                ]}>
+                                                    {wallpaperItems}
+                                                </Box>
+
+                                            </ViewShot>
+                                        )
+                                }
+
+                                <Fab color={wTheme.dark}
+                                    onPress={() => themeLimitReached ? this.doShowAds() : this.doUpdateTheme()}
+                                    icon={themeLimitReached ? 'play' : 'reload'}
+                                    style={styles.fab1}
+                                    animated={themeLimitReached}
+                                    animatedText={t('watch-video')}
+                                />
+
+                                {
+                                    !themeLimitReached && (
+                                        <Fab color={wTheme.dark}
+                                            onPress={() => this.doSetWallpaper()}
+                                            icon={'check'}
+                                            style={styles.fab2}
+                                            animated={false}
+                                        />
+                                    )
+                                }
+
                             </Paper>
-                        </ScrollView>
-                        {
-                            themeLimitReached && (
-                                <Box fitAbsolute style={styles.limitOverlay} />
-                            )
-                        }
+                        </Box>
+
+                        <Box style={styles.colorsBoxWrapper}
+                            pointerEvents={themeLimitReached ? 'none' : 'auto'}>
+                            <ScrollView horizontal>
+                                <Paper style={styles.colorsBox} column={false}>
+                                    {THEMES.map(th => (
+                                        <Fab color={th.background}
+                                            key={th.id}
+                                            onPress={() => this.doUpdateTheme(th)}
+                                            icon={wTheme.id === th.id ? 'check' : ''}
+                                            style={styles.colorFab}
+                                            animated={false}
+                                        />
+                                    ))}
+                                </Paper>
+                            </ScrollView>
+                            {
+                                themeLimitReached && (
+                                    <Box fitAbsolute style={styles.limitOverlay} />
+                                )
+                            }
+                        </Box>
                     </Box>
                 </Box>
             </Page>
@@ -336,7 +357,7 @@ const styles = (theme) => StyleSheet.create({
         left: 0,
         right: 0,
         height: 56,
-        backgroundColor: 'white'
+        // backgroundColor: 'white'
         // backgroundColor: theme.palette.Primary['500'].color
     },
     fab1: {

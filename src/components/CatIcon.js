@@ -68,7 +68,7 @@ const ROTATION = [
     -30, 0, 30
 ]
 
-export default class CatIcon extends React.Component {
+export default class CatIcon extends React.PureComponent {
 
     constructor(props) {
         super(props)

@@ -20,9 +20,9 @@ android {
     defaultConfig {
         applicationId "com.cytech.wallcat"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 1
-        versionName "0.0.1"
+        targetSdkVersion 23
+        versionCode 4
+        versionName "0.0.4"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }

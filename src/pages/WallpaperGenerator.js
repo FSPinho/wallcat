@@ -2,6 +2,7 @@ import React from 'react';
 import { translate } from 'react-i18next';
 import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text } from 'react-native';
 import { AdMobRewarded } from 'react-native-admob';
+import { GoogleAnalyticsTracker } from "react-native-google-analytics-bridge";
 import ViewShot, { releaseCapture } from "react-native-view-shot";
 import { Box, Page, Paper } from '../components';
 import CatIcon from '../components/CatIcon';
@@ -11,7 +12,14 @@ import WallpaperManager from '../services/WallpaperManager';
 import { withTheme } from '../theme';
 import { palette } from '../theme/Theme';
 
+
 const MAX_THEME_CHANGE_BEFORE_ADS = __DEV__ ? 2 : 8
+const ANALYTICS_PREFIX = __DEV__ ? 'DEV_' : ''
+const ANALYTICS_PAGE_NAME = ANALYTICS_PREFIX + 'HOME'
+const ANALYTICS_EVENT_CATEGORY = ANALYTICS_PREFIX + 'COMMON'
+const ANALYTICS_EVENT_GENERATE_NEW_WALLPAPER = ANALYTICS_PREFIX + 'EVENT_GENERATE_NEW_WALLPAPER'
+const ANALYTICS_EVENT_CHANGE_WALLPAPER = ANALYTICS_PREFIX + 'EVENT_CHANGE_WALLPAPER'
+const ANALYTICS_EVENT_SEE_ADS = ANALYTICS_PREFIX + 'EVENT_SEE_ADS'
 
 const createTheme = (id, p, s) => ({
     id,
@@ -63,12 +71,17 @@ class WallpaperGenerator extends React.Component {
             themeChangeCount: 0,
             themeLimitReached: false,
         }
+
+        this.tracker = new GoogleAnalyticsTracker("UA-100789786-1");
     }
 
     async componentWillMount() {
+
     }
 
     async componentDidMount() {
+
+        this.tracker.trackScreenView(ANALYTICS_PAGE_NAME)
 
         if (__DEV__) {
             console.log('WallpaperGenerator:doShowAds - DEV MODE!!!')
@@ -76,7 +89,7 @@ class WallpaperGenerator extends React.Component {
             await AdMobRewarded.setAdUnitID('ca-app-pub-3940256099942544/5224354917');
         } else {
             console.log('WallpaperGenerator:doShowAds - PROD MODE!!!')
-            Alert.showLongText('Showing ads on prod mode!')
+            // Alert.showLongText('Showing ads on prod mode!')
             await AdMobRewarded.setAdUnitID('ca-app-pub-5594222713152935/1022883731');
         }
 
@@ -98,6 +111,8 @@ class WallpaperGenerator extends React.Component {
 
         if (this.state.refreshing)
             return
+
+        this.tracker.trackEvent(ANALYTICS_EVENT_CATEGORY, ANALYTICS_EVENT_GENERATE_NEW_WALLPAPER)
 
         await this.doChangeRefreshing(true)
         const theme = _theme || this.state.theme
@@ -193,6 +208,8 @@ class WallpaperGenerator extends React.Component {
         if (this.state.refreshing)
             return
 
+        this.tracker.trackEvent(ANALYTICS_EVENT_CATEGORY, ANALYTICS_EVENT_CHANGE_WALLPAPER)
+
         setTimeout(async () => {
             try {
 
@@ -227,6 +244,8 @@ class WallpaperGenerator extends React.Component {
                 } catch (error) {
                     /** ... */
                 }
+
+                this.tracker.trackEvent(ANALYTICS_EVENT_CATEGORY, ANALYTICS_EVENT_SEE_ADS)
 
                 await AdMobRewarded.showAd()
 

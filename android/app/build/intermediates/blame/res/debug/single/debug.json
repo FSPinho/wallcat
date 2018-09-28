@@ -12,12 +12,12 @@
         "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e24ea068913af63e294631ca16e7607d/res/drawable-ldrtl-xhdpi/abc_ic_ab_back_mtrl_am_alpha.png"
     },
     {
-        "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_googleg_disabled_color_18.png.flat",
-        "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/play-services-base-15.0.1.aar/d45f2ab9dd0ecc11a43598859ee2e940/res/drawable-xhdpi-v4/googleg_disabled_color_18.png"
-    },
-    {
         "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-xxxhdpi_abc_ic_menu_cut_mtrl_alpha.png.flat",
         "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e24ea068913af63e294631ca16e7607d/res/drawable-xxxhdpi/abc_ic_menu_cut_mtrl_alpha.png"
+    },
+    {
+        "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-xhdpi-v4_googleg_disabled_color_18.png.flat",
+        "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/play-services-base-15.0.1.aar/d45f2ab9dd0ecc11a43598859ee2e940/res/drawable-xhdpi-v4/googleg_disabled_color_18.png"
     },
     {
         "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi_abc_ic_menu_moreoverflow_mtrl_alpha.png.flat",
@@ -484,6 +484,10 @@
         "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/play-services-base-15.0.1.aar/d45f2ab9dd0ecc11a43598859ee2e940/res/drawable-mdpi-v4/common_google_signin_btn_text_dark_normal_background.9.png"
     },
     {
+        "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "/home/felipe/Projects/personal/wallcat/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
         "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/mipmap-hdpi_ic_launcher.png.flat",
         "source": "/home/felipe/Projects/personal/wallcat/android/app/src/main/res/mipmap-hdpi/ic_launcher.png"
     },
@@ -674,6 +678,10 @@
     {
         "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-xxhdpi_abc_switch_track_mtrl_alpha.9.png.flat",
         "source": "/home/felipe/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e24ea068913af63e294631ca16e7607d/res/drawable-xxhdpi/abc_switch_track_mtrl_alpha.9.png"
+    },
+    {
+        "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/mipmap-ldpi_ic_launcher.png.flat",
+        "source": "/home/felipe/Projects/personal/wallcat/android/app/src/main/res/mipmap-ldpi/ic_launcher.png"
     },
     {
         "merged": "/home/felipe/Projects/personal/wallcat/android/app/build/intermediates/res/merged/debug/drawable-hdpi_abc_ic_clear_mtrl_alpha.png.flat",
